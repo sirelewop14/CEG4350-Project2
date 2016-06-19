@@ -8,17 +8,46 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#define STACK_MAX 5
 
 int *pageInput;
 int numFrames;
+int *stackSize;
 
 struct Stack{
-    int data[50];
+    int data[STACK_MAX];
     int size;
 };
 typedef struct Stack Stack;
 
+void stackInit(Stack *S){
+    S->size = 0;
+}
 
+int top(Stack *S){
+    if(S->size == 0){
+        //Stack Empty
+        return 0;
+    }
+    return S->data[S->size-1];
+}
+
+void push(Stack *S, int val){
+    if(S->size <STACK_MAX ){
+        S->data[S->size++] = val;
+    }
+}
+
+int pop(Stack *S){
+    if(S->size == 0){
+        //Stack empty
+    } else {
+        int retVal = S->data[S->size-1];
+        S->size--;
+        return retVal;
+    }
+    return 0;
+}
 
 
 
