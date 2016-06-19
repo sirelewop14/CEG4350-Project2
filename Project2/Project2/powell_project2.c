@@ -11,6 +11,7 @@
 #define STACK_MAX 5
 
 int *pageInput;
+int numPages;
 int numFrames;
 int *stackSize;
 
@@ -18,6 +19,7 @@ struct Stack{
     int data[STACK_MAX];
     int size;
 };
+
 typedef struct Stack Stack;
 
 void stackInit(Stack *S){
@@ -33,7 +35,7 @@ int top(Stack *S){
 }
 
 void push(Stack *S, int val){
-    if(S->size <STACK_MAX ){
+    if(S->size < STACK_MAX){
         S->data[S->size++] = val;
     }
 }
@@ -49,6 +51,18 @@ int pop(Stack *S){
     return 0;
 }
 
+void fifo(){
+    //FIFO Structure
+    int fifo[numFrames];
+    //Loop to insert all pages
+    for(int i = 0; i < numPages; ++i){
+        //Search for current page in frames.
+        for (int j =0; j < numFrames; ++j){
+            
+        }
+    }
+}
+
 
 
 
@@ -60,6 +74,7 @@ int main(int argc, const char * argv[]) {
         printf("Running tests with %s frames and %d pages.\n", argv[1], (argc-2));
         numFrames = atoi(argv[1]);
         pageInput = malloc(argc-2);
+        numPages = (argc-2);
         for(int i =0; i < (argc-2); ++i){
             pageInput[i] = atoi(argv[i+2]);
             printf("slot %d has page %d\n",i,pageInput[i]);
