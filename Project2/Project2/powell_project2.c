@@ -1,10 +1,8 @@
-//
-//  main.c
-//  Project2
-//
-//  Created by Rhys Powell on 6/7/16.
-//  Copyright © 2016 Rhys Powell. All rights reserved.
-//
+/*
+ Rhys Powell
+ CEG4350 Summer 2016
+ Project 2: Paging Algorithms
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,12 +51,35 @@ int pop(Stack *S){
 
 void fifo(){
     //FIFO Structure
+    int faultCount = 0;
+    
     int fifo[numFrames];
+    
+    int isPresent = 0;
+    int slotTracker = 0;
+
+    
     //Loop to insert all pages
     for(int i = 0; i < numPages; ++i){
         //Search for current page in frames.
         for (int j =0; j < numFrames; ++j){
-            
+            if(fifo[j] == pageInput[j]){
+                //No fault, value is already in frame.
+                isPresent = 1;
+            }
+        }
+        //if it is NOT present
+        if(isPresent == 0){
+            faultCount++;
+            fifo[slotTracker] = pageInput[i];
+            for(int j = 0; j < slotTracker; ++j){
+                printf("%d",fifo[slotTracker]);
+            }
+            if (slotTracker < numFrames){
+                slotTracker++;
+            } else {
+                slotTracker = 0;
+            }
         }
     }
 }
@@ -77,8 +98,9 @@ int main(int argc, const char * argv[]) {
         numPages = (argc-2);
         for(int i =0; i < (argc-2); ++i){
             pageInput[i] = atoi(argv[i+2]);
-            printf("slot %d has page %d\n",i,pageInput[i]);
+           // printf("slot %d has page %d\n",i,pageInput[i]);
         }
         
     }
+    fifo();
 }
