@@ -56,11 +56,8 @@ void fifo(){
     int faultCount = 0;
     int fifo[3] = {-99,-99,-99};
     //int fifo[numFrames];
-    
     int isPresent = 0;
     int slotTracker = 0;
-
-    
     //Loop to insert all pages
     for(int i = 0; i < numPages; ++i){
         //Search for current page in frames.
@@ -74,10 +71,10 @@ void fifo(){
         if(isPresent == 0){
             faultCount++;
             fifo[slotTracker] = pageInput[i];
-
             for(int j = 0; j <= slotTracker; ++j){
                 printf("%d",fifo[slotTracker]);
             }
+            printf("*\n");
             if (slotTracker < numFrames-1){
                 slotTracker++;
             } else {
@@ -89,9 +86,9 @@ void fifo(){
             }
             printf("\n");
         }
-        
         isPresent = 0;
     }
+    printf("FIFO: Total number of Page Faults: %d\n",faultCount);
 }
 
 void optimal(){
