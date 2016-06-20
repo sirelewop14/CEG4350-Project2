@@ -52,9 +52,9 @@ int pop(Stack *S){
 
 void fifo(){
     //FIFO Structure
-    printf("Starting FIFO\n");
+    printf("Starting FIFO\n-----------------------\n");
     int faultCount = 0;
-    int fifo[3] = {-99,-99,-99};
+    int fifo[3] = {-1,-1,-1};
     //int fifo[numFrames];
     int isPresent = 0;
     int slotTracker = 0;
@@ -72,7 +72,7 @@ void fifo(){
             faultCount++;
             fifo[slotTracker] = pageInput[i];
             for(int j = 0; j <= slotTracker; ++j){
-                printf("%d",fifo[slotTracker]);
+                printf("%d,",fifo[slotTracker]);
             }
             printf("*\n");
             if (slotTracker < numFrames-1){
@@ -88,6 +88,7 @@ void fifo(){
         }
         isPresent = 0;
     }
+    printf("--------------------------------------\n");
     printf("FIFO: Total number of Page Faults: %d\n",faultCount);
 }
 
