@@ -12,7 +12,7 @@
 int pageInput[50];
 int numPages;
 int numFrames;
-int *stackSize;
+
 
 struct Stack{
     int data[STACK_MAX];
@@ -93,6 +93,27 @@ void fifo(){
 }
 
 void optimal(){
+    printf("Starting Optimal\n---------------------\n");
+    //Set up variables and stuff
+    int opt[3] = {-1,-1,-1};
+    int isPresent = 0;
+    int faultCount = 0;
+    
+    //Loop through the pages
+    for(int i = 0; i < numPages; i++){
+        //Search through current pages
+        for (int j =0; j < numFrames; ++j){
+            if(opt[j] == pageInput[i]){
+                //No fault, value is already in frame.
+                isPresent = 1;
+            }
+        }//End Search
+        //If it is NOT present
+        if(isPresent==0){
+            faultCount++;
+            
+        }
+    }
     
 }
 
@@ -115,13 +136,14 @@ int main(int argc, const char * argv[]) {
     } else {
         printf("Running tests with %s frames and %d pages.\n", argv[1], (argc-2));
         numFrames = atoi(argv[1]);
-      //  pageInput = malloc(argc-2);
+        //  pageInput = malloc(argc-2);
         numPages = (argc-2);
         for(int i =0; i < (argc-2); ++i){
             pageInput[i] = atoi(argv[i+2]);
-           // printf("slot %d has page %d\n",i,pageInput[i]);
+            // printf("slot %d has page %d\n",i,pageInput[i]);
         }
         
     }
-    fifo();
+    // fifo();
+    optimal();
 }
