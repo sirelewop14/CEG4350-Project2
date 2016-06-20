@@ -8,7 +8,8 @@
 #include <stdlib.h>
 #define STACK_MAX 5
 
-int *pageInput;
+//int *pageInput;
+int pageInput[50];
 int numPages;
 int numFrames;
 int *stackSize;
@@ -51,9 +52,10 @@ int pop(Stack *S){
 
 void fifo(){
     //FIFO Structure
+    printf("Starting FIFO\n");
     int faultCount = 0;
-    
-    int fifo[numFrames];
+    int fifo[3] = {-99,-99,-99};
+    //int fifo[numFrames];
     
     int isPresent = 0;
     int slotTracker = 0;
@@ -63,7 +65,7 @@ void fifo(){
     for(int i = 0; i < numPages; ++i){
         //Search for current page in frames.
         for (int j =0; j < numFrames; ++j){
-            if(fifo[j] == pageInput[j]){
+            if(fifo[j] == pageInput[i]){
                 //No fault, value is already in frame.
                 isPresent = 1;
             }
@@ -72,19 +74,40 @@ void fifo(){
         if(isPresent == 0){
             faultCount++;
             fifo[slotTracker] = pageInput[i];
-            for(int j = 0; j < slotTracker; ++j){
+
+            for(int j = 0; j <= slotTracker; ++j){
                 printf("%d",fifo[slotTracker]);
             }
-            if (slotTracker < numFrames){
+            if (slotTracker < numFrames-1){
                 slotTracker++;
             } else {
                 slotTracker = 0;
             }
+        } else {
+            for(int k=0;k<numFrames;k++){
+                printf("%d",fifo[k]);
+            }
+            printf("\n");
         }
+        
+        isPresent = 0;
     }
 }
 
+void optimal(){
+    
+}
 
+void lru(){
+    
+}
+
+void lfu(){
+    
+}
+void mfu(){
+    
+}
 
 
 
@@ -94,7 +117,7 @@ int main(int argc, const char * argv[]) {
     } else {
         printf("Running tests with %s frames and %d pages.\n", argv[1], (argc-2));
         numFrames = atoi(argv[1]);
-        pageInput = malloc(argc-2);
+      //  pageInput = malloc(argc-2);
         numPages = (argc-2);
         for(int i =0; i < (argc-2); ++i){
             pageInput[i] = atoi(argv[i+2]);
