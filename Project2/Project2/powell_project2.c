@@ -123,15 +123,38 @@ void optimal(){
                     
                 }
             }
-            
         }
     }
-    
 }
 
 void lru(){
+    printf("Starting LRU\n---------------------\n");
+    //Set up variables and stuff
+    Stack lru;
+    stackInit(&lru);
     
+    
+    int isPresent = 0;
+    int faultCount = 0;
+
+    //Loop through the pages
+    for(int i = 0; i < numPages; i++){
+        //Search through current pages
+        for (int j =0; j < numFrames; ++j){
+            if(opt[j] == pageInput[i]){
+                //No fault, value is already in frame.
+                isPresent = 1;
+            }
+            
+        }//End Search
+        if(isPresent == 0){
+            //is NOT present
+            faultCount++;
+            
+        }
+    }
 }
+
 
 void lfu(){
     
