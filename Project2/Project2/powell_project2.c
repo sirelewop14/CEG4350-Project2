@@ -96,8 +96,10 @@ void optimal(){
     printf("Starting Optimal\n---------------------\n");
     //Set up variables and stuff
     int opt[3] = {-1,-1,-1};
+    
     int isPresent = 0;
     int faultCount = 0;
+    int slotTracker = 0;
     
     //Loop through the pages
     for(int i = 0; i < numPages; i++){
@@ -111,6 +113,16 @@ void optimal(){
         //If it is NOT present
         if(isPresent==0){
             faultCount++;
+            if(slotTracker == numFrames-1){
+                //This means that all frames are full
+                //and we need to perform a replacement
+                for(int k =0; k < numPages; k++){
+                    //Search through pages to see
+                    //which value is the farthest away from being used
+                    
+                    
+                }
+            }
             
         }
     }
@@ -144,6 +156,6 @@ int main(int argc, const char * argv[]) {
         }
         
     }
-    // fifo();
+    fifo();
     optimal();
 }
