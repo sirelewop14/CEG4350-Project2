@@ -83,7 +83,7 @@ void fifo(){
 			}
 		} else {
 			for(int k = 0; k < numFrames; k++){
-				printf("%d",fifo[k]);
+				printf("%d,",fifo[k]);
 			}
 			printf("\n");
 		}
@@ -146,6 +146,13 @@ void optimal(){
 						tempSlot = k;
 					}
 				}
+				opt[tempSlot] = pageInput[i];
+				temp = -1;
+				tempSlot = -1;
+				for(int j = 0; j < numFrames; j++){
+					printf("%d,",opt[j]);
+				}
+				printf("*\n");
 			} else {
 				//nothing in frames, load page in.
 				opt[slotTracker] = pageInput[i];
@@ -169,7 +176,8 @@ void optimal(){
 			isPresent = 0;
 		}
 	}
-}
+	printf("--------------------------------------\n");
+	printf("Optimal: Total number of Page Faults: %d\n",faultCount);}
 
 void lru(){
 	printf("Starting LRU\n---------------------\n");
