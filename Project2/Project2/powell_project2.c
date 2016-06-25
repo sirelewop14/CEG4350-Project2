@@ -131,6 +131,14 @@ void optimal(){
 					//Array to store the values of distance for victims
 					victimTracker[k] = distance;
 				}
+				//This will loop through the array of victims and find the
+				//the slot with the highest value. This select the victim frame.
+				int temp = -1;
+				for(int k = 0; k < numFrames; k++){
+					if(victimTracker[k] >= temp){
+						temp = victimTracker[k];
+					}
+				}
 			}
 		}
 	}
