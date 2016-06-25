@@ -72,7 +72,7 @@ void fifo(){
             faultCount++;
             fifo[slotTracker] = pageInput[i];
             for(int j = 0; j <= slotTracker; ++j){
-                printf("%d,",fifo[slotTracker]);
+                printf("%d,",fifo[j]);
             }
             printf("*\n");
             if (slotTracker < numFrames-1){
@@ -141,7 +141,7 @@ void lru(){
     for(int i = 0; i < numPages; i++){
         //Search through current pages
         for (int j =0; j < numFrames; ++j){
-            if(opt[j] == pageInput[i]){
+            if(lru.data[j] == pageInput[i]){
                 //No fault, value is already in frame.
                 isPresent = 1;
             }
