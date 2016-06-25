@@ -53,7 +53,7 @@ int pop(Stack *S){
 
 void fifo(){
 	//FIFO Structure
-	printf("Starting FIFO\n-----------------------\n");
+	printf("\nStarting FIFO\n-----------------------\n");
 	int faultCount = 0;
 	int fifo[ARRAY_MAX] = {-1,-1,-1};
 	//int fifo[numFrames];
@@ -76,13 +76,13 @@ void fifo(){
 				printf("%d,",fifo[j]);
 			}
 			printf("*\n");
-			if (slotTracker < numFrames-1){
+			if (slotTracker < numFrames - 1){
 				slotTracker++;
 			} else {
 				slotTracker = 0;
 			}
 		} else {
-			for(int k=0;k<numFrames;k++){
+			for(int k = 0; k < numFrames; k++){
 				printf("%d",fifo[k]);
 			}
 			printf("\n");
@@ -107,39 +107,66 @@ void optimal(){
 	//Loop through the pages
 	for(int i = 0; i < numPages; i++){
 		//Search through current pages
-		for (int j =0; j < numFrames; ++j){
+		for (int j = 0; j < numFrames; ++j){
 			if(opt[j] == pageInput[i]){
 				//No fault, value is already in frame.
 				isPresent = 1;
 			}
 		}//End Search
 		//If it is NOT present
-		if(isPresent==0){
+		if(isPresent == 0){
 			faultCount++;
-			if(slotTracker == numFrames-1){
+			if(i >= numFrames){
 				//This means that all frames are full
 				//and we need to perform a replacement
 				for(int k =0; k < numFrames; k++){ //Loops through frames
-					for(int j = 0; j<numPages; j++){ //loops through pages
+					for(int j = i; j < numPages; j++){ //loops through pages
 						//Search through pages to see
 						//which value is the farthest away from being used
-						if(opt[k]!=pageInput[j]){
+						if(opt[k]!= pageInput[j]){
 							//Increment to show how far away the value is.
 							distance++;
+						} else {
+							break;
 						}
 					}
 					//Array to store the values of distance for victims
 					victimTracker[k] = distance;
+					distance = 0;
 				}
 				//This will loop through the array of victims and find the
 				//the slot with the highest value. This select the victim frame.
 				int temp = -1;
+				int tempSlot = -1;
 				for(int k = 0; k < numFrames; k++){
 					if(victimTracker[k] >= temp){
+						//Shows the distance
 						temp = victimTracker[k];
+						//tracks the slot of victim
+						tempSlot = k;
 					}
 				}
+			} else {
+				//nothing in frames, load page in.
+				opt[slotTracker] = pageInput[i];
+				//Make sure we stay in bounds of index
+				if(slotTracker + 1 == numFrames){
+					slotTracker = 0;
+				} else {
+					slotTracker++;
+				}
+				for(int j = 0; j < numFrames; j++){
+					printf("%d,",opt[j]);
+				}
+				printf("*\n");
 			}
+		} else {
+			//Prints if no fault
+			for(int j = 0; j < numFrames; j++){
+				printf("%d,",opt[j]);
+			}
+			printf("\n");
+			isPresent = 0;
 		}
 	}
 }
@@ -190,9 +217,10 @@ int main(int argc, const char * argv[]) {
 		numFrames = atoi(argv[1]);
 		//  pageInput = malloc(argc-2);
 		numPages = (argc-2);
+		printf("Page input: ");
 		for(int i =0; i < (argc-2); ++i){
 			pageInput[i] = atoi(argv[i+2]);
-			// printf("slot %d has page %d\n",i,pageInput[i]);
+			printf("%d ",pageInput[i]);
 		}
 	}
 	fifo();
