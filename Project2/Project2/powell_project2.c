@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #define STACK_MAX 5
 #define ARRAY_MAX 3
 
@@ -238,13 +239,24 @@ void mfu(){
 int main(int argc, const char * argv[]) {
 	if(argc == 1){
 		printf("ERROR: No parameters, please try again.\n");
+		exit(0);
+	} else if(argc == 2){
+		printf("ERROR: Not enough parameters, please try again.\n");
+		exit(0);
 	} else {
+		if(0!=isdigit((int)argv[1])){
+			printf("ERROR: Not numeric parameters, please try again.\n");
+			exit(0);
+		}
 		printf("Running tests with %s frames and %d pages.\n", argv[1], (argc-2));
 		numFrames = atoi(argv[1]);
-		//  pageInput = malloc(argc-2);
 		numPages = (argc-2);
 		printf("Page input: ");
 		for(int i =0; i < (argc-2); ++i){
+			if(0!=isdigit((int)argv[i+2])){
+				printf("ERROR: Not numeric parameters, please try again.\n");
+				exit(0);
+			}
 			pageInput[i] = atoi(argv[i+2]);
 			printf("%d ",pageInput[i]);
 		}
