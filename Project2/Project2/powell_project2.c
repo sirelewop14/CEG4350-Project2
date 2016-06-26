@@ -24,6 +24,9 @@ typedef struct Stack Stack;
 
 void stackInit(Stack *S){
 	S->size = 0;
+	for (int i = 0; i < STACK_MAX; i++){
+		S->data[i] = -1;
+	}
 }
 
 int top(Stack *S){
@@ -35,8 +38,13 @@ int top(Stack *S){
 }
 
 void push(Stack *S, int val){
-	if(S->size < STACK_MAX){
+	if(S->size < numFrames){
 		S->data[S->size++] = val;
+	} else {
+		for(int i = S->size-1; i > 0; i--){
+			S->data[i] = S->data[i-1];
+		}
+		S->data[0] = val;
 	}
 }
 
@@ -185,26 +193,36 @@ void lru(){
 	Stack lru;
 	stackInit(&lru);
 	
-	
 	int isPresent = 0;
 	int faultCount = 0;
 	
 	//Loop through the pages
 	for(int i = 0; i < numPages; i++){
 		//Search through current pages
-		for (int j =0; j < numFrames; ++j){
+		for (int j = 0; j < numFrames; ++j){
 			if(lru.data[j] == pageInput[i]){
 				//No fault, value is already in frame.
 				isPresent = 1;
+				for(int k = 0; k < lru.size; k++){
+					printf("%d,",lru.data[k]);
+				}
+				printf("\n");
 			}
 			
 		}//End Search
 		if(isPresent == 0){
 			//is NOT present
 			faultCount++;
-			
+			push(&lru,pageInput[i]);
+			for(int j = 0; j < lru.size; j++){
+				printf("%d,",lru.data[j]);
+			}
+			printf("*\n");
 		}
+		isPresent = 0;
 	}
+	printf("--------------------------------------\n");
+	printf("LRU: Total number of Page Faults: %d\n",faultCount);
 }
 
 
@@ -233,4 +251,5 @@ int main(int argc, const char * argv[]) {
 	}
 	fifo();
 	optimal();
+	lru();
 }
