@@ -61,40 +61,36 @@ int pop(Stack *S){
 }
 
 void fifo(){
-	//FIFO Structure
-	printf("\nStarting FIFO\n-----------------------\n");
-	int faultCount = 0;
-	int fifo[ARRAY_MAX] = {-1,-1,-1};
-	//int fifo[numFrames];
+	printf("Starting FIFO\n---------------------\n");
+	//Set up variables and stuff
+	Stack fifo;
+	stackInit(&fifo);
+	
 	int isPresent = 0;
-	int slotTracker = 0;
-	//Loop to insert all pages
-	for(int i = 0; i < numPages; ++i){
-		//Search for current page in frames.
-		for (int j =0; j < numFrames; ++j){
-			if(fifo[j] == pageInput[i]){
+	int faultCount = 0;
+	
+	//Loop through the pages
+	for(int i = 0; i < numPages; i++){
+		//Search through current pages
+		for (int j = 0; j < numFrames; ++j){
+			if(fifo.data[j] == pageInput[i]){
 				//No fault, value is already in frame.
 				isPresent = 1;
+				for(int k = 0; k < fifo.size; k++){
+					printf("%d,",fifo.data[k]);
+				}
+				printf("\n");
 			}
-		}
-		//if it is NOT present
+			
+		}//End Search
 		if(isPresent == 0){
+			//is NOT present
 			faultCount++;
-			fifo[slotTracker] = pageInput[i];
-			for(int j = 0; j <= slotTracker; ++j){
-				printf("%d,",fifo[j]);
+			push(&fifo,pageInput[i]);
+			for(int j = 0; j < fifo.size; j++){
+				printf("%d,",fifo.data[j]);
 			}
 			printf("*\n");
-			if (slotTracker < numFrames - 1){
-				slotTracker++;
-			} else {
-				slotTracker = 0;
-			}
-		} else {
-			for(int k = 0; k < numFrames; k++){
-				printf("%d,",fifo[k]);
-			}
-			printf("\n");
 		}
 		isPresent = 0;
 	}
@@ -204,6 +200,11 @@ void lru(){
 			if(lru.data[j] == pageInput[i]){
 				//No fault, value is already in frame.
 				isPresent = 1;
+				//move page hit to top of stack
+				int temp = lru.data[j];
+				int temp2 = lru.data[0];
+				lru.data[0] = temp;
+				lru.data[j] = temp2;
 				for(int k = 0; k < lru.size; k++){
 					printf("%d,",lru.data[k]);
 				}
