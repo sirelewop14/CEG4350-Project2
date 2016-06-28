@@ -76,7 +76,7 @@ void fifo(){
 				//No fault, value is already in frame.
 				isPresent = 1;
 				for(int k = 0; k < fifo.size; k++){
-					printf("%d,",fifo.data[k]);
+					printf("%d,", fifo.data[k]);
 				}
 				printf("\n");
 			}
@@ -87,14 +87,14 @@ void fifo(){
 			faultCount++;
 			push(&fifo,pageInput[i]);
 			for(int j = 0; j < fifo.size; j++){
-				printf("%d,",fifo.data[j]);
+				printf("%d,", fifo.data[j]);
 			}
 			printf("*\n");
 		}
 		isPresent = 0;
 	}
 	printf("--------------------------------------\n");
-	printf("FIFO: Total number of Page Faults: %d\n",faultCount);
+	printf("FIFO: Total number of Page Faults: %d\n", faultCount);
 }
 
 void optimal(){
@@ -154,7 +154,7 @@ void optimal(){
 				temp = -1;
 				tempSlot = -1;
 				for(int j = 0; j < numFrames; j++){
-					printf("%d,",opt[j]);
+					printf("%d,", opt[j]);
 				}
 				printf("*\n");
 			} else {
@@ -167,21 +167,21 @@ void optimal(){
 					slotTracker++;
 				}
 				for(int j = 0; j < numFrames; j++){
-					printf("%d,",opt[j]);
+					printf("%d,", opt[j]);
 				}
 				printf("*\n");
 			}
 		} else {
 			//Prints if no fault
 			for(int j = 0; j < numFrames; j++){
-				printf("%d,",opt[j]);
+				printf("%d,", opt[j]);
 			}
 			printf("\n");
 			isPresent = 0;
 		}
 	}
 	printf("--------------------------------------\n");
-	printf("Optimal: Total number of Page Faults: %d\n",faultCount);}
+	printf("Optimal: Total number of Page Faults: %d\n", faultCount);}
 
 void lru(){
 	printf("Starting LRU\n---------------------\n");
@@ -223,34 +223,112 @@ void lru(){
 		isPresent = 0;
 	}
 	printf("--------------------------------------\n");
-	printf("LRU: Total number of Page Faults: %d\n",faultCount);
+	printf("LRU: Total number of Page Faults: %d\n", faultCount);
 }
 
 void lfu(){
+	printf("Starting LFU\n---------------------\n");
 	int lfuVals[ARRAY_MAX] = {-1,-1,-1};
-	int lfuCounts[ARRAY_MAX];
+	int lfuCounts[ARRAY_MAX]= {0,0,0};
 	int isPresent = 0;
+	int lowestSlot = -1;
+	int lowestCount = 99;
+	int faultCount = 0;
 	
 	//Loop through pages
 	for(int i = 0; i < numPages; i++){
-		if(pageInput[i] == lfuVals[i]){
-			//page hit, increment counter
-			isPresent = 1;
-			lfuCounts[i]++;
-			
+		//loop through frames for search
+		for(int j = 0; j < numFrames; j++){
+			if(pageInput[i] == lfuVals[j]){
+				//page hit, increment counter
+				isPresent = 1;
+				lfuCounts[j]++;
+				for(int k = 0; k < numFrames; k++){
+					printf("%d,",lfuVals[k]);
+				}
+				printf("\n");
+			}
+		}
+		if(faultCount < numFrames && isPresent == 0 ){
+			lfuVals[i] = pageInput[i];
+			faultCount++;
 			for(int k = 0; k < numFrames; k++){
 				printf("%d,",lfuVals[k]);
 			}
-			printf("\n");
+			printf("*\n");
+		} else if(isPresent == 0){
+			//we have to perform replacment
+			faultCount++;
+			for(int j = 0; j < numFrames; j++){
+				//search through loaded frames to find lowest count
+				if(lfuCounts[j] < lowestCount){
+					lowestSlot = j;
+					lowestCount = lfuCounts[j];
+				}
+			}
+			lfuVals[lowestSlot] = pageInput[i];
+			lfuCounts[lowestSlot] = 0;
+			for(int k = 0; k < numFrames; k++){
+				printf("%d,",lfuVals[k]);
+			}
+			printf("*\n");
 		}
-		//If it is NOT present
-		if(isPresent == 0){
-			
-		}
+		isPresent = 0;
 	}
+	printf("--------------------------------------\n");
+	printf("LFU: Total number of Page Faults: %d\n", faultCount);
 }
 void mfu(){
+	printf("Starting MFU\n---------------------\n");
+	int mfuVals[ARRAY_MAX] = {-1,-1,-1};
+	int mfuCounts[ARRAY_MAX]= {0,0,0};
+	int isPresent = 0;
+	int highestSlot = -1;
+	int highestCount = 99;
+	int faultCount = 0;
 	
+	//Loop through pages
+	for(int i = 0; i < numPages; i++){
+		//loop through frames for search
+		for(int j = 0; j < numFrames; j++){
+			if(pageInput[i] == mfuVals[j]){
+				//page hit, increment counter
+				isPresent = 1;
+				mfuCounts[j]++;
+				for(int k = 0; k < numFrames; k++){
+					printf("%d,",mfuVals[k]);
+				}
+				printf("\n");
+			}
+		}
+		if(faultCount < numFrames && isPresent == 0 ){
+			mfuVals[i] = pageInput[i];
+			faultCount++;
+			for(int k = 0; k < numFrames; k++){
+				printf("%d,",mfuVals[k]);
+			}
+			printf("*\n");
+		} else if(isPresent == 0){
+			//we have to perform replacment
+			faultCount++;
+			for(int j = 0; j < numFrames; j++){
+				//search through loaded frames to find lowest count
+				if(mfuCounts[j] > highestCount){
+					highestSlot = j;
+					highestCount = mfuCounts[j];
+				}
+			}
+			mfuVals[highestSlot] = pageInput[i];
+			mfuCounts[highestSlot] = 0;
+			for(int k = 0; k < numFrames; k++){
+				printf("%d,",mfuVals[k]);
+			}
+			printf("*\n");
+		}
+		isPresent = 0;
+	}
+	printf("--------------------------------------\n");
+	printf("MFU: Total number of Page Faults: %d\n", faultCount);
 }
 
 
@@ -283,4 +361,6 @@ int main(int argc, const char * argv[]) {
 	fifo();
 	optimal();
 	lru();
+	lfu();
+	mfu();
 }
