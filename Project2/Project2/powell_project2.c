@@ -10,7 +10,6 @@
 #define STACK_MAX 5
 #define ARRAY_MAX 3
 
-//int *pageInput;
 int pageInput[50];
 int numPages;
 int numFrames;
@@ -227,9 +226,28 @@ void lru(){
 	printf("LRU: Total number of Page Faults: %d\n",faultCount);
 }
 
-
 void lfu(){
+	int lfuVals[ARRAY_MAX] = {-1,-1,-1};
+	int lfuCounts[ARRAY_MAX];
+	int isPresent = 0;
 	
+	//Loop through pages
+	for(int i = 0; i < numPages; i++){
+		if(pageInput[i] == lfuVals[i]){
+			//page hit, increment counter
+			isPresent = 1;
+			lfuCounts[i]++;
+			
+			for(int k = 0; k < numFrames; k++){
+				printf("%d,",lfuVals[k]);
+			}
+			printf("\n");
+		}
+		//If it is NOT present
+		if(isPresent == 0){
+			
+		}
+	}
 }
 void mfu(){
 	
