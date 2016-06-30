@@ -4,39 +4,47 @@
  Project 2: Paging Algorithms
  */
 
+//Standard includes and define max number of frames
+//for memory allocation.
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#define STACK_MAX 5
-#define ARRAY_MAX 3
+#define MAX_FRAMES 10
 
 int pageInput[50];
 int numPages;
 int numFrames;
 
-
+/**
+ *  The Stack struct definition.
+ */
 struct Stack{
-	int data[STACK_MAX];
+	int data[MAX_FRAMES];
 	int size;
 };
 
 typedef struct Stack Stack;
 
+/**
+ *  The stackInit function simply intitializes the Stack with default values.
+ *	For this project, the default value is -1 since this is not a valid page number.
+ *
+ *  @param S - The stack to initialize.
+ */
 void stackInit(Stack *S){
 	S->size = 0;
-	for (int i = 0; i < STACK_MAX; i++){
+	for (int i = 0; i < MAX_FRAMES; i++){
 		S->data[i] = -1;
 	}
 }
 
-int top(Stack *S){
-	if(S->size == 0){
-		//Stack Empty
-		return 0;
-	}
-	return S->data[S->size-1];
-}
-
+/**
+ *  The push function adds a value to the stack. The value is added to the top of the stack and 
+ *  the any values that are already in the stack get pushed down one slot.
+ *
+ *  @param S   S is the stack on which to push the value.
+ *  @param val val is the integer value to add to the top of the stack.
+ */
 void push(Stack *S, int val){
 	if(S->size < numFrames){
 		S->data[S->size++] = val;
@@ -48,17 +56,10 @@ void push(Stack *S, int val){
 	}
 }
 
-int pop(Stack *S){
-	if(S->size == 0){
-		//Stack empty
-	} else {
-		int retVal = S->data[S->size-1];
-		S->size--;
-		return retVal;
-	}
-	return 0;
-}
-
+/**
+ *  The FIFO function runs a simulation of the First In, First Out paging algorithm
+ *  and prints out the page hits, faults, and frame values as it runs.
+ */
 void fifo(){
 	printf("Starting FIFO\n---------------------\n");
 	//Set up variables and stuff
@@ -80,7 +81,6 @@ void fifo(){
 				}
 				printf("\n");
 			}
-			
 		}//End Search
 		if(isPresent == 0){
 			//is NOT present
@@ -97,16 +97,28 @@ void fifo(){
 	printf("FIFO: Total number of Page Faults: %d\n", faultCount);
 }
 
+/**
+ *  The Optimal function runs a simulation of the Optimal paging algorithm.
+ *  It searches through the pages that are passed in as arguments at the programs beginning.
+ *  After searching through the pages, it determines the best times to swap certain frames
+ *  in and out to provide the lowest number of page faults. This algorithm is purely for testing,
+ *  as a developer would need to be able to predict the future to implement this algorthim. It is
+ *  "The Best Case Scenario"
+ */
 void optimal(){
 	printf("Starting Optimal\n---------------------\n");
 	//Set up variables and stuff
-	int opt[ARRAY_MAX] = {-1,-1,-1};
+	int opt[MAX_FRAMES];
+	
+	for (int i = 0; i < MAX_FRAMES; i++){
+		opt[i] = -1;
+	}
 	
 	int isPresent = 0;
 	int faultCount = 0;
 	int slotTracker = 0;
 	int distance = 0;
-	int victimTracker[ARRAY_MAX];
+	int victimTracker[MAX_FRAMES];
 	
 	//Loop through the pages
 	for(int i = 0; i < numPages; i++){
@@ -183,6 +195,11 @@ void optimal(){
 	printf("--------------------------------------\n");
 	printf("Optimal: Total number of Page Faults: %d\n", faultCount);}
 
+/**
+ *  The LRU function runs a simulation of the paging algorithm Least Recently Used.
+ *  The function determines the page frame that was used the least recently and selects 
+ *  it as the victim frame when a page fault occurs.
+ */
 void lru(){
 	printf("Starting LRU\n---------------------\n");
 	//Set up variables and stuff
@@ -226,10 +243,23 @@ void lru(){
 	printf("LRU: Total number of Page Faults: %d\n", faultCount);
 }
 
+/**
+ *  The LFU function performs a paging simulation of the Least Frequently Used algorithm.
+ *  This algorithm keeps a count of how often each page is used (Hit) after it is loaded into
+ *  a frame. The algorithm then selects the frame that has the lowest hit count as the victim
+ *  frame when a page fault occurs.
+ */
 void lfu(){
 	printf("Starting LFU\n---------------------\n");
-	int lfuVals[ARRAY_MAX] = {-1,-1,-1};
-	int lfuCounts[ARRAY_MAX]= {0,0,0};
+	//Set up parallel arrays.
+	int lfuVals[MAX_FRAMES];
+	int lfuCounts[MAX_FRAMES];
+	//Initialize the arrays with default values.
+	for (int i = 0; i < MAX_FRAMES; i++){
+		lfuVals[i] = -1;
+		lfuCounts[i] = 0;
+	}
+	
 	int isPresent = 0;
 	int lowestSlot = -1;
 	int lowestCount = 99;
@@ -249,6 +279,7 @@ void lfu(){
 				printf("\n");
 			}
 		}
+		//This makes sure that the frames are full
 		if(faultCount < numFrames && isPresent == 0 ){
 			lfuVals[i] = pageInput[i];
 			faultCount++;
@@ -256,6 +287,7 @@ void lfu(){
 				printf("%d,",lfuVals[k]);
 			}
 			printf("*\n");
+		//Once all the frames are full we can start looking for victims
 		} else if(isPresent == 0){
 			//we have to perform replacment
 			faultCount++;
@@ -278,10 +310,24 @@ void lfu(){
 	printf("--------------------------------------\n");
 	printf("LFU: Total number of Page Faults: %d\n", faultCount);
 }
+
+/**
+ *  The MFU function performs the Most Frequently Used paging algorithm simulation. The Most
+ *  Frequently Used algorithm functions almost identically to the LFU function, and only differs
+ *  in its selection of the victim frame. In stead of slecting the frame with the lowest hit count,
+ *  it selects the frame with the highest hit count as the victim frame when a page fault occurs.
+ */
 void mfu(){
 	printf("Starting MFU\n---------------------\n");
-	int mfuVals[ARRAY_MAX] = {-1,-1,-1};
-	int mfuCounts[ARRAY_MAX]= {0,0,0};
+	//Set up parallel arrays
+	int mfuVals[MAX_FRAMES];
+	int mfuCounts[MAX_FRAMES];
+	//Initialize the arrays with default values
+	for (int i = 0; i < MAX_FRAMES; i++){
+		mfuVals[i] = -1;
+		mfuCounts[i] = 0;
+	}
+	
 	int isPresent = 0;
 	int highestSlot = -1;
 	int highestCount = 99;
@@ -301,6 +347,7 @@ void mfu(){
 				printf("\n");
 			}
 		}
+		//Ensure the frames are full
 		if(faultCount < numFrames && isPresent == 0 ){
 			mfuVals[i] = pageInput[i];
 			faultCount++;
@@ -308,11 +355,12 @@ void mfu(){
 				printf("%d,",mfuVals[k]);
 			}
 			printf("*\n");
+		//Once all the frames are full we can do victim selection
 		} else if(isPresent == 0){
 			//we have to perform replacment
 			faultCount++;
 			for(int j = 0; j < numFrames; j++){
-				//search through loaded frames to find lowest count
+				//search through loaded frames to find highest count
 				if(mfuCounts[j] > highestCount){
 					highestSlot = j;
 					highestCount = mfuCounts[j];
@@ -331,8 +379,20 @@ void mfu(){
 	printf("MFU: Total number of Page Faults: %d\n", faultCount);
 }
 
-
-
+/**
+ *  The main function. This function is the bread and butter of the whole operation.
+ *  The main function takes input from the user and processes it into frame numbers 
+ *  and page values. The page values get stored into an array, and the number of frames
+ *  determines the size of the stacks and arrays used for simulations of the paging 
+ *  algorithms.
+ *
+ *  @param argc An integer value which indicates the number of arguments passed to the 
+ *				program at run-time. 0 is the program itself, 1 is the number of frames,
+ *				2-n are the page values.
+ *  @param argv A char array that contains the values of the arguments passed to the program.
+ *
+ *  @return returns and int value showing how the program exited.
+ */
 int main(int argc, const char * argv[]) {
 	if(argc == 1){
 		printf("ERROR: No parameters, please try again.\n");
